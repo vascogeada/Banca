@@ -36,16 +36,25 @@ public class Conta {
 	public double getSaldo() {
 		return saldo;
 	}
+	
+	public void setSaldo(double saldo) {
+		this.saldo = saldo;
+	}
+
 
 
 	// Construtores 
 	
+	
+
+
+
 	/**
 	 * Constrói uma conta igualando o saldo ao {@link #MONTANTE_MINIMO MONTANTE_MINIMO} de abertura da conta.
 	 * 
 	 */
 	public Conta() {
-		
+		saldo = MONTANTE_MINIMO;
 		
 	}
 	
@@ -59,7 +68,10 @@ public class Conta {
 	 */
 	public Conta(double saldoInicial) {
 		
-			
+		if (saldoInicial > MONTANTE_MINIMO)
+			saldo = saldoInicial;
+		else
+			throw new AssertionError("O saldo é inferior ao montante mínimo");
 	}
 	
 	// Métodos 
@@ -72,7 +84,10 @@ public class Conta {
 	 */
 	public void depositar( double quantia ) {
 		
-		
+		if(quantia > 0)
+			setSaldo(getSaldo() + quantia);
+		else 
+			throw new AssertionError("O saldo é inferior a 0");
 		
 	}
 	
@@ -87,7 +102,10 @@ public class Conta {
 	 */
 	public void levantar( double quantia ) { 
 		
-		
+		if(quantia > 0 || getSaldo() < quantia)
+			setSaldo(getSaldo() + quantia);
+		else 
+			throw new AssertionError("Precisa de inserir um montante válido");
 	}
 	
 	
@@ -102,8 +120,14 @@ public class Conta {
 	 */
 	public void transferir( Conta contaDestino, double montante ) { 
 		
-		
-			
+		if (contaDestino == null)
+			throw new AssertionError("A conta destino não é valida");
+		else if (montante < 0 || getSaldo() < montante )
+			throw new AssertionError("Precisa de inserir um montante válido");
+		else {
+			setSaldo(getSaldo() - montante);
+			contaDestino.setSaldo(getSaldo() + montante);
+		}
 	}
 
 }
