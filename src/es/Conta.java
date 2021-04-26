@@ -20,10 +20,12 @@ public class Conta {
 	 * 
 	 */
 	public static final double MONTANTE_MINIMO = 100.0;
+	public static final double DEPOSITO_MINIMO = 0.0;
 	
 	// Por simplicidade escolhemos o tipo double, 
 	// apesar de não ser o indicado para cálculo monetário/financeiro
 	private double saldo;
+	
 
 	
 	// Acessores 
@@ -36,16 +38,25 @@ public class Conta {
 	public double getSaldo() {
 		return saldo;
 	}
+	
+	private void setSaldo(double saldo) {
+		this.saldo = saldo;
+	}
+
 
 
 	// Construtores 
 	
+	
+
+
+
 	/**
 	 * Constrói uma conta igualando o saldo ao {@link #MONTANTE_MINIMO MONTANTE_MINIMO} de abertura da conta.
 	 * 
 	 */
 	public Conta() {
-		
+		saldo = MONTANTE_MINIMO;
 		
 	}
 	
@@ -59,7 +70,10 @@ public class Conta {
 	 */
 	public Conta(double saldoInicial) {
 		
-			
+		if (saldoInicial < MONTANTE_MINIMO)
+			throw new IllegalArgumentException("O saldo é inferior ao montante mínimo");
+		else
+			saldo = saldoInicial;
 	}
 	
 	// Métodos 
@@ -72,7 +86,10 @@ public class Conta {
 	 */
 	public void depositar( double quantia ) {
 		
-		
+		if(quantia > 0)
+			setSaldo(getSaldo() + quantia);
+		else 
+			throw new IllegalArgumentException("A quantia é inferior a 0");
 		
 	}
 	
@@ -87,7 +104,10 @@ public class Conta {
 	 */
 	public void levantar( double quantia ) { 
 		
-		
+		if(quantia > 0 && getSaldo() > quantia)
+			setSaldo(getSaldo() - quantia);
+		else 
+			throw new IllegalArgumentException("Precisa de inserir um montante válido");
 	}
 	
 	
@@ -102,8 +122,19 @@ public class Conta {
 	 */
 	public void transferir( Conta contaDestino, double montante ) { 
 		
-		
-			
+		if (contaDestino == null)
+			throw new NullPointerException("A conta destino não é valida");
+		else if (montante < 0 || getSaldo() < montante )
+			throw new IllegalArgumentException("Precisa de inserir um montante válido");
+		else {
+			saldo -= montante;
+			contaDestino.setSaldo(contaDestino.getSaldo() + montante);
+		}
+	}
+	
+	//Métodos Complementares
+	public Conta clone() {
+		return new Conta();
 	}
 
 }
